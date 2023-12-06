@@ -14,6 +14,9 @@ Here's how it works:
 
 3. When processing a DispatchCheck RPC, if the request is not cached already, then we redispatch the request. Dispatching a request incurrs a network hop to the peer which owns that object id, but this cost is no more expensive then doing an external cache lookup before doing further evaluation anyways. No network hops are necessary if the peer serving the DispatchCheck has the subproblem cached already (because it owns the cache key in the hashring).
 
+## Architecture Diagram
+![dispatch-diagram](./assets/Dispatch%20Cluster%20Topology.png "Dispatch Cluster Topology")
+
 ## Getting Started
 
 ### Prerequisites
