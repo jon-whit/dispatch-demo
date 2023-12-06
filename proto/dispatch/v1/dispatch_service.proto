@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dispatch.v1;
+
+service DispatchService {
+    rpc DispatchCheck(DispatchCheckRequest) returns (DispatchCheckResponse);
+}
+
+message DispatchCheckRequest {
+    string object_type = 1;
+    string object_id = 2;
+    string relation = 3;
+}
+
+message DispatchCheckResponse {
+    bool allowed = 1;
+}

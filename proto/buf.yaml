@@ -1,0 +1,6 @@
+version: v1
+name: buf.build/jonwhit/dispatch-demo
+deps:
+  - buf.build/googleapis/googleapis
+breaking:
+  ignore_unstable_packages: true

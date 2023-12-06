@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package fga.v1;
+
+service FGAService {
+    rpc Check(CheckRequest) returns (CheckResponse);
+}
+
+message CheckRequest {
+    string object_type = 1;
+    string object_id = 2;
+    string relation = 3;
+}
+
+message CheckResponse {}

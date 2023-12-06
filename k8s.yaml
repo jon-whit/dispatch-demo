@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fga
+  labels:
+    app.kubernetes.io/name: fga
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fga
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fga
+    spec:
+      serviceAccountName: fga
+      containers:
+      - name: fga  
+        image: dispatcher:0.0.1
+        ports:
+        - name: fga-grpc
+          containerPort: 50051
+        - name: dispatcher-grpc
+          containerPort: 50052
+        readinessProbe:
+          exec:
+            command: ["/user/local/bin/grpc_health_probe", "-addr=:50051"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fga
+spec:
+  selector:
+    app.kubernetes.io/name: fga
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: fga-grpc
+      protocol: TCP
+      port: 50051
+      targetPort: fga-grpc
+    - name: dispatcher-grpc
+      protocol: TCP
+      port: 50052
+      targetPort: dispatcher-grpc
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: endpoint-reader
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fga
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-endpoints
+subjects:
+- kind: ServiceAccount
+  name: fga
+roleRef:
+  kind: Role
+  name: endpoint-reader
+  apiGroup: rbac.authorization.k8s.io
